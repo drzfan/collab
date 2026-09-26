@@ -141,7 +141,9 @@ export function attachHocuspocus(
       }
 
       // ── No token → legacy anonymous path. ───────────────────────────
-      const role = requestParameters.get('role');
+      // [casual-fork patch] self-host 单租户部署(fw-auth 已在网关层挡人),
+      // 匿名 join 默认给 edit,可用 CASUAL_ANON_ROLE=view 收紧。
+      const role = requestParameters.get('role') ?? process.env.CASUAL_ANON_ROLE ?? 'edit';
       const readOnly = anonymousJoinReadOnly(role);
       if (readOnly) {
         connection.readOnly = true;
